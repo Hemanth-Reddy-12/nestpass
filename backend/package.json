@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "NestPass (Event Management System) ",
+  "homepage": "https://github.com/Hemanth-Reddy-12/nestpass#readme",
+  "bugs": {
+    "url": "https://github.com/Hemanth-Reddy-12/nestpass/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hemanth-Reddy-12/nestpass.git"
+  },
+  "license": "ISC",
+  "author": "Hemanth-Reddy-12",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
