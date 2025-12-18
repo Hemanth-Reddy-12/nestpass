@@ -47,14 +47,13 @@ const userSchema = new monogess.Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: [8, "Password must be at least 8 characters"],
-      select: false, // Don't include password in query results by default
+      select: false,
     },
 
-    // Contact Information
     phoneNumber: {
       type: String,
       unique: true,
-      sparse: true, // Allow multiple null values for unique constraint
+      sparse: true,
       trim: true,
       match: [
         /^[+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/,
@@ -74,7 +73,6 @@ const userSchema = new monogess.Schema(
       maxlength: [100, "Location cannot exceed 100 characters"],
     },
 
-    // Role & Access
     roles: {
       type: [String],
       enum: ["admin", "organizer", "user"],
@@ -86,14 +84,13 @@ const userSchema = new monogess.Schema(
         message: "User must have at least one role",
       },
     },
-    // Profile
+
     profileImage: {
       type: String,
       default: null,
       match: [/^https?:\/\/.+/, "Please provide a valid URL"],
     },
 
-    // Account Status
     isActive: {
       type: Boolean,
       default: true,
@@ -109,7 +106,6 @@ const userSchema = new monogess.Schema(
       default: false,
     },
 
-    // Password Reset
     resetPasswordToken: {
       type: String,
       select: false,
@@ -120,7 +116,6 @@ const userSchema = new monogess.Schema(
       select: false,
     },
 
-    // Email Verification
     emailVerificationToken: {
       type: String,
       select: false,
@@ -131,14 +126,13 @@ const userSchema = new monogess.Schema(
       select: false,
     },
 
-    // Security
     lastLogin: {
       type: Date,
       default: null,
     },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt automatically
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
@@ -158,6 +152,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const user = monogess.model("user", userSchema);
+const User = monogess.model("user", userSchema);
 
-export default user;
+export default User;

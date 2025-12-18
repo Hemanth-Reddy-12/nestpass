@@ -131,3 +131,67 @@ export const loginValidator = [
       "Password must contain uppercase, lowercase, number, and special character"
     ),
 ];
+
+export const updateRegisterValidator = [
+  body("firstName")
+    .trim()
+    .optional()
+    .isLength({ min: 2, max: 50 })
+    .withMessage("First name must be 2-50 characters")
+    .matches(/^[a-zA-Z\s]+$/)
+    .withMessage("First name can only contain letters"),
+
+  body("lastName")
+    .trim()
+    .optional()
+    .isLength({ min: 2, max: 50 })
+    .withMessage("Last name must be 2-50 characters")
+    .matches(/^[a-zA-Z\s]+$/)
+    .withMessage("Last name can only contain letters"),
+
+  // Username
+  body("username")
+    .trim()
+    .optional()
+    .isLength({ min: 3, max: 30 })
+    .withMessage("Username must be 3-30 characters")
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage("Username can only contain letters, numbers, and underscores")
+    .custom(async (username) => {
+      const existingUser = await User.findOne({
+        username: username.toLowerCase(),
+      });
+      if (existingUser) {
+        throw new Error("Username already taken");
+      }
+      return true;
+    }),
+
+  body("phoneNumber")
+    .optional()
+    .trim()
+    .isMobilePhone()
+    .withMessage("Please provide a valid phone number")
+    .custom(async (phoneNumber) => {
+      if (phoneNumber) {
+        const existingUser = await User.findOne({ phoneNumber });
+        if (existingUser) {
+          throw new Error("Phone number already registered");
+        }
+      }
+      return true;
+    }),
+
+  // Gender (optional)
+  body("gender")
+    .optional()
+    .isIn(["male", "female", "other", "prefer-not-to-say"])
+    .withMessage("Invalid gender value"),
+
+  // Location (optional)
+  body("location")
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("Location cannot exceed 100 characters"),
+];

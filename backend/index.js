@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import mainRoutes from "./routes/main.routes.js";
+import routes from "./routes/routes.js";
 import { connectDB } from "./config/connectDB.js";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 connectDB();
 
-app.use("/api/v1", mainRoutes);
+app.use("/api/v1", routes);
 
 if (process.env.NODE_ENV === "development") {
   const PORT = 8000;

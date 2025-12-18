@@ -1,8 +1,10 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes.js";
-import adminRoutes from "./admin.routes.js";
+import protectedRoutes from "./protected.routes.js";
+import publicRoutes from "./public.routes.js";
 
 const router = Router();
+
 router.get("/", (req, res) => {
   return res.json({
     status: 200,
@@ -11,6 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/auth", authRoutes);
-router.use("/admin", adminRoutes);
+router.use("/", publicRoutes);
+router.use("/", protectedRoutes);
 
 export default router;
