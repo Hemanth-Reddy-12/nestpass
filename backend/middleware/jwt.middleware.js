@@ -99,3 +99,9 @@ export const eventOwnerShip = async (req, res, next) => {
     });
   }
 };
+
+export const generateBookingCode = () => {
+  return `BK-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(
+    1000 + Math.random() * 9000
+  )}`;
+};
