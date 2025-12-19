@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import User from "../../models/userSchema.js";
+import User from "../../models/user.model";
 
 // Validation rules array
 export const registerValidator = [
@@ -73,7 +73,7 @@ export const registerValidator = [
   body("phoneNumber")
     .optional()
     .trim()
-    .isMobilePhone()
+    .isMobilePhone("en-IN")
     .withMessage("Please provide a valid phone number")
     .custom(async (phoneNumber) => {
       if (phoneNumber) {
@@ -170,7 +170,7 @@ export const updateRegisterValidator = [
   body("phoneNumber")
     .optional()
     .trim()
-    .isMobilePhone()
+    .isMobilePhone("en-IN")
     .withMessage("Please provide a valid phone number")
     .custom(async (phoneNumber) => {
       if (phoneNumber) {

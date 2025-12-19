@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const eventSchema = mongoose.Schema(
+/** @type {mongoose.Schema} */
+const eventSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -25,7 +26,7 @@ const eventSchema = mongoose.Schema(
       type: Date,
       required: [true, "Event end time is required"],
       validate: {
-        validator: function (value) {
+        validator: function (value: Date) {
           return value > this.startTime;
         },
         message: "End time must be after start time",
@@ -73,6 +74,7 @@ const eventSchema = mongoose.Schema(
   }
 );
 
-const Event = mongoose.model("events", eventSchema);
+/** @type {mongoose.Model} */
+const event = mongoose.model("events", eventSchema);
 
-export default Event;
+export default event;

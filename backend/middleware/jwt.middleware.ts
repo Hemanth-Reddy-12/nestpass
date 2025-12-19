@@ -1,9 +1,11 @@
+import { Response, Request, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import userSchema from "../models/userSchema.js";
-import eventSchema from "../models/eventSchema.js";
+import userSchema from "../models/user.model";
+import eventSchema from "../models/event.model";
+import bookingSchema from "../models/booking.model";
 
-export const generateTokenAndSetCookies = (res, user) => {
-  const token = jwt.sign({ user }, process.env.JWT_SECRET_KEY, {
+export const generateTokenAndSetCookies = (res: Response, user: object) => {
+  const token = jwt.sign({ user }, process.env.JWT_SECRET_KEY as string, {
     expiresIn: "1d",
   });
 
@@ -17,7 +19,11 @@ export const generateTokenAndSetCookies = (res, user) => {
   return token;
 };
 
-export const authentication = (req, res, next) => {
+export const authentication = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let token;
   token = req.cookies.token;
   if (!token) {
@@ -28,13 +34,12 @@ export const authentication = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
     if (!decoded) {
       return res
         .status(401)
         .json({ success: false, message: "unauthorized no token provided" });
     }
-    req.user = process.env.USER;
     next();
   } catch (error) {
     console.log("Error in verifyToken", error);
@@ -42,33 +47,25 @@ export const authentication = (req, res, next) => {
   }
 };
 
-export const loggedInUser = (req, res, next) => {
-  try {
-    if (token === undefined) {
-      next();
-      return;
-    }
-    return res.json({
-      status: 200,
-      message: "already user is logged in",
-    });
-  } catch (error) {
-    return res.json({
-      status: 500,
-      message: "Server Error",
-    });
-  }
-};
-
 // role authorization middleware can be added here in future
 
-export const roleAuthorization = (roles) => {
-  return async (req, res, next) => {
-    let decode = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
-    const username = decode?.user;
+export const roleAuthorization = (roles: any) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    let decode = jwt.verify(
+      req.cookies.token,
+      process.env.JWT_SECRET_KEY as string
+    ) as any;
+    const username = decode?.user.username;
     const userRole = await userSchema
       .findOne({ username: username })
       .select("roles");
+
+    if (!userRole) {
+      return res.json({
+        status: 404,
+        message: "user not found",
+      });
+    }
 
     if (userRole.roles.some((role) => roles.includes(role))) {
       next();
@@ -82,12 +79,19 @@ export const roleAuthorization = (roles) => {
   };
 };
 
-export const getUsername = (req) => {
-  let decode = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
+export const getLoggedUser = (req: Request) => {
+  let decode = jwt.verify(
+    req.cookies.token,
+    process.env.JWT_SECRET_KEY as string
+  ) as any;
   return decode?.user;
 };
 
-export const eventOwnerShip = async (req, res, next) => {
+export const eventOwnerShip = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const eventId = req.params.id;
     const eventOwner = await eventSchema.findById(eventId).select("organizer");

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const TicketSchema = new mongoose.Schema(
+/** @type {mongoose.Schema} */
+const ticketSchema = new mongoose.Schema(
   {
     ticketCode: {
       type: String,
@@ -13,7 +14,7 @@ const TicketSchema = new mongoose.Schema(
       required: [true, "Event ID is required"],
     },
     bookingId: {
-      type: moongoese.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "bookings",
       required: [true, "Booking ID is required"],
     },
@@ -32,6 +33,7 @@ const TicketSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Ticket = mongoose.model("tickets", TicketSchema);
+/** @type {mongoose.Model} */
+const ticket = mongoose.model("tickets", ticketSchema);
 
-export default Ticket;
+export default ticket;

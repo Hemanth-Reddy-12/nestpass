@@ -1,18 +1,18 @@
+import { Request, Response } from "express";
 import { generateBookingCode } from "../middleware/jwt.middleware.js";
-import eventSchema from "../models/eventSchema.js";
-import bookingSchema from "../models/bookingSchema.js";
-import userSchema from "../models/userSchema.js";
-import { getUsername } from "../middleware/jwt.middleware.js";
-import paymentSchema from "../models/paymentSchema.js";
+import eventSchema from "../models/event.model.js";
+import bookingSchema from "../models/booking.model.js";
+import userSchema from "../models/user.model.js";
+import { getLoggedUser } from "../middleware/jwt.middleware.js";
+import paymentSchema from "../models/payment.model.js";
 import createRazorpay from "../config/razorpay.js";
 
-export const createBooking = async (req, res) => {
+export const createBooking = async (req: Request, res: Response) => {
   try {
     const { eventId, numberOfTickets } = req.body;
 
-    const username = getUsername(req);
-    const user = await userSchema.findOne({ username: username });
-    const userId = user._id;
+    const loggedUser = getLoggedUser(req);
+    const userId = loggedUser._id;
 
     // check the event is exists
 
@@ -66,8 +66,8 @@ export const createBooking = async (req, res) => {
       currency: "INR",
       receipt: booking.bookingCode,
       notes: {
-        bookingId: booking._id,
-        eventId: event._id,
+        bookingId: booking._id as any,
+        eventId: event._id as any,
       },
     });
 
@@ -86,6 +86,70 @@ export const createBooking = async (req, res) => {
         booking,
         paymentIntent,
       },
+    });
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "Server Error",
+      error: error,
+    });
+  }
+};
+
+export const getMyBookings = async (req: Request, res: Response) => {
+  try {
+    const loggedUser = getLoggedUser(req);
+    const myBookings = await bookingSchema.find({ userId: loggedUser._id });
+    if (!myBookings) {
+      return res.json({
+        status: 404,
+        message: "No Booking Events avaliable",
+      });
+    }
+    res.json({
+      status: 200,
+      message: "Bookings retrive successfully",
+      data: { myBookings },
+    });
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "Server Error",
+      error: error,
+    });
+  }
+};
+
+export const getBookingById = async (req: Request, res: Response) => {
+  try {
+    const orderId = req.params.id;
+    const loggedUser = getLoggedUser(req);
+    const order = await bookingSchema.findById(orderId);
+
+    if (!order) {
+      return res.json({
+        status: 404,
+        message: "order not found",
+      });
+    }
+
+    if (order.userId != loggedUser._id) {
+      return res.json({
+        status: 400,
+        message: "Booking not under this account",
+      });
+    }
+
+    if (!order) {
+      return res.json({
+        status: 404,
+        message: "order is not found",
+      });
+    }
+    res.json({
+      status: 200,
+      message: "order retrive successfully",
+      data: order,
     });
   } catch (error) {
     res.json({

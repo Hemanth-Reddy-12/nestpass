@@ -1,7 +1,8 @@
-import monogess from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = new monogess.Schema(
+/** @type {mongoose.Schema} */
+const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -78,7 +79,7 @@ const userSchema = new monogess.Schema(
       enum: ["admin", "organizer", "user"],
       default: ["user"],
       validate: {
-        validator: function (arr) {
+        validator: function (arr: any) {
           return arr.length > 0;
         },
         message: "User must have at least one role",
@@ -140,7 +141,7 @@ const userSchema = new monogess.Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    return next();
+    return next;
   }
 
   try {
@@ -152,6 +153,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const User = monogess.model("user", userSchema);
+/** @type {mongoose.Model} */
+const user = mongoose.model("user", userSchema);
 
-export default User;
+export default user;

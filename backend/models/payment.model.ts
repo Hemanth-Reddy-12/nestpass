@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/** @type {mongoose.Schema} */
 const paymentSchema = new mongoose.Schema(
   {
     bookingId: {
@@ -39,6 +40,7 @@ const paymentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Payment = mongoose.model("payments", paymentSchema);
+/** @type {mongoose.Model} */
+const payment = mongoose.model("payments", paymentSchema);
 
-export default Payment;
+export default payment;

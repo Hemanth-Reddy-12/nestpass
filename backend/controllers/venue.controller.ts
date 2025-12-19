@@ -1,6 +1,7 @@
-import venueSchema from "../models/venueSchema.js";
+import { Request, Response } from "express";
+import venueSchema from "../models/venue.model.js";
 
-export const getVenues = async (req, res) => {
+export const getVenues = async (req: Request, res: Response) => {
   try {
     const venues = await venueSchema.find();
     res.json({
@@ -12,12 +13,12 @@ export const getVenues = async (req, res) => {
     res.json({
       status: 500,
       message: "Error fetching venues",
-      error: error.message,
+      error: error,
     });
   }
 };
 
-export const addVenue = async (req, res) => {
+export const addVenue = async (req: Request, res: Response) => {
   try {
     const newVenue = new venueSchema(req.body);
     await newVenue.save();
@@ -30,11 +31,12 @@ export const addVenue = async (req, res) => {
     res.json({
       status: 500,
       message: "Error adding venue",
+      error: error,
     });
   }
 };
 
-export const getVenuesById = async (req, res) => {
+export const getVenuesById = async (req: Request, res: Response) => {
   try {
     const venueId = req.params.id;
     const venue = await venueSchema.findById(venueId);
@@ -47,6 +49,7 @@ export const getVenuesById = async (req, res) => {
     res.json({
       status: 500,
       message: "Error fetching venue",
+      error: error,
     });
   }
 };

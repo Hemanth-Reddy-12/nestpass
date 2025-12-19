@@ -1,13 +1,15 @@
+import { Request, Response } from "express";
 import crypto from "crypto";
-import paymentSchema from "../models/paymentSchema.js";
-import bookingSchema from "../models/bookingSchema.js";
+import paymentSchema from "../models/payment.model.js";
+import bookingSchema from "../models/booking.model.js";
 
-export const razorpayPaymentValidator = async (req, res) => {
+export const razorpayPaymentValidator = async (req: Request, res: Response) => {
   try {
     const { razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+    const razarpayKeySecret = process.env.RAZORPAY_KEY_SECRET as string;
 
     const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", razarpayKeySecret)
       .update(razorpayOrderId + "|" + razorpayPaymentId)
       .digest("hex");
 
@@ -48,7 +50,7 @@ export const razorpayPaymentValidator = async (req, res) => {
     return res.json({
       status: 500,
       message: "Error verifing payment",
-      error: error.message,
+      error: error,
     });
   }
 };

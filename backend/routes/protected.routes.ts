@@ -20,7 +20,11 @@ import {
 import { updateRegisterValidator } from "../middleware/validator/auth.validator.js";
 import { createEventValidation } from "../middleware/validator/event.validator.js";
 import { validate } from "../middleware/validate.middleware.js";
-import { createBooking } from "../controllers/booking.controller.js";
+import {
+  createBooking,
+  getBookingById,
+  getMyBookings,
+} from "../controllers/booking.controller.js";
 import { razorpayPaymentValidator } from "../controllers/paymet.controller.js";
 
 const router = Router();
@@ -93,5 +97,8 @@ router.post(
   roleAuthorization(["user", "organizer", "admin"]),
   razorpayPaymentValidator
 );
+
+router.get("/bookings", authentication, getMyBookings);
+router.get("/booking/:id", authentication, getBookingById);
 
 export default router;

@@ -1,11 +1,12 @@
+import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import userSchema from "../models/userSchema.js";
-import { generateTokenAndSetCookies } from "../middleware/jwt.middleware.js";
+import userSchema from "../models/user.model";
+import { generateTokenAndSetCookies } from "../middleware/jwt.middleware";
 
-export const userRegister = async (req, res) => {
+export const userRegister = async (req: Request, res: Response) => {
   try {
     const reqBody = req.body;
-    const user = await userSchema(reqBody);
+    const user = new userSchema(reqBody);
     user.save();
     res.json({
       status: 200,
@@ -24,17 +25,24 @@ export const userRegister = async (req, res) => {
   } catch (error) {
     res.json({
       status: 500,
-      message:
-        "Error while register the user here is the problem " + error.message,
+      message: "Error register the user",
+      error: error,
     });
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
     const user = await userSchema.findOne({ email: email }).select("+password");
+
+    if (!user) {
+      return res.json({
+        status: 404,
+        messgae: "user not found",
+      });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
@@ -44,7 +52,7 @@ export const login = async (req, res) => {
           "Invalid email or password. Please try again with the correct credentials.",
       });
 
-    generateTokenAndSetCookies(res, user.username);
+    generateTokenAndSetCookies(res, user);
 
     res.json({
       status: 200,
@@ -56,24 +64,25 @@ export const login = async (req, res) => {
           lastName: user.lastName,
           username: user.username,
           email: user.email,
-          role: user.role,
+          role: user.roles,
         },
       },
     });
   } catch (error) {
     res.json({
       status: 500,
-      message: "Error while Login the user " + error.message,
+      message: "error Login the user ",
+      error: error,
     });
   }
 };
 
-export const logout = (req, res) => {
+export const logout = (req: Request, res: Response) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      samesite: "strict",
+      sameSite: "strict",
     });
     res.json({
       status: 200,
@@ -82,7 +91,8 @@ export const logout = (req, res) => {
   } catch (error) {
     res.json({
       status: 500,
-      message: "error while logout the user" + error.message,
+      message: "error while logout the user",
+      error: error,
     });
   }
 };

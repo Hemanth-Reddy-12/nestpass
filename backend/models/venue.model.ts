@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const venueSchema = mongoose.Schema(
+/** @type {mongoose.Schema} */
+const venueSchema = new mongoose.Schema(
   {
     venueName: {
       type: String,
@@ -65,7 +66,7 @@ const venueSchema = mongoose.Schema(
       },
 
       validate: {
-        validator: function (arr) {
+        validator: function (arr: any) {
           return arr && arr.length > 0 && arr.length <= 5;
         },
         message: "Please select 1 to 5 event types",
@@ -82,7 +83,7 @@ const venueSchema = mongoose.Schema(
     images: {
       type: [String],
       validate: {
-        validator: function (arr) {
+        validator: function (arr: any) {
           return arr.length >= 1 && arr.length <= 10;
         },
         message: "Please provide between 1 and 10 images",
@@ -100,6 +101,7 @@ const venueSchema = mongoose.Schema(
   }
 );
 
-const Venue = mongoose.model("Venue", venueSchema);
+/** @type {mongoose.Model} */
+const venue = mongoose.model("Venue", venueSchema);
 
-export default Venue;
+export default venue;

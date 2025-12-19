@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/** @type {mongoose.Schema} */
 const bookingSchema = new mongoose.Schema(
   {
     bookingCode: {
@@ -41,6 +42,7 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Booking = mongoose.model("bookings", bookingSchema);
+/** @type {mongoose.Model} */
+const booking = mongoose.model("bookings", bookingSchema);
 
-export default Booking;
+export default booking;

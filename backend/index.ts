@@ -1,8 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import routes from "./routes/routes.js";
-import { connectDB } from "./config/connectDB.js";
+import routes from "./routes/routes";
+import { connectDB } from "./config/connectDB";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -12,7 +12,7 @@ app.use(cors());
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cookieParser() as any);
 
 connectDB();
 
