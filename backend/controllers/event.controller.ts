@@ -162,3 +162,20 @@ export const searchEventByFilter = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getAllEvents = async (req: Request, res: Response) => {
+  try {
+    const allEvents = await eventSchema.find();
+    res.json({
+      status: 200,
+      message: "fetch all events successfully",
+      data: allEvents,
+    });
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "error fetching all events",
+      error: error,
+    });
+  }
+};

@@ -42,12 +42,9 @@ export const authentication = (
     }
     next();
   } catch (error) {
-    console.log("Error in verifyToken", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.json({ success: 500, message: "Server error", error: error });
   }
 };
-
-// role authorization middleware can be added here in future
 
 export const roleAuthorization = (roles: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -100,12 +97,19 @@ export const eventOwnerShip = async (
     res.json({
       status: 500,
       message: "Server Error",
+      error: error,
     });
   }
 };
 
 export const generateBookingCode = () => {
   return `BK-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(
+    1000 + Math.random() * 9000
+  )}`;
+};
+
+export const generateTicketCode = () => {
+  return `TK-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(
     1000 + Math.random() * 9000
   )}`;
 };

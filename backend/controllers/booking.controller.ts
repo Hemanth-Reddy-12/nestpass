@@ -159,3 +159,19 @@ export const getBookingById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getAllBooking = async (req: Request, res: Response) => {
+  try {
+    const allBookings = await bookingSchema.find();
+    res.json({
+      status: 200,
+      message: "fetch all booking successfully",
+      data: allBookings,
+    });
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "error get all booking",
+    });
+  }
+};

@@ -53,3 +53,28 @@ export const getVenuesById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateVenue = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const reqBody = req.body;
+    const updateVenue = await venueSchema.findByIdAndUpdate(id, { reqBody });
+    if (!updateVenue) {
+      return res.json({
+        status: 404,
+        message: "venue not found",
+      });
+    }
+    res.json({
+      status: 200,
+      message: "update venue successfully",
+      data: updateVenue,
+    });
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "error update venue",
+      error: error,
+    });
+  }
+};

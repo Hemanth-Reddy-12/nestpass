@@ -1,26 +1,16 @@
-import { Request, Response } from "express";
-import crypto from "crypto";
+import { NextFunction, Request, Response } from "express";
 import paymentSchema from "../models/payment.model.js";
 import bookingSchema from "../models/booking.model.js";
 
-export const razorpayPaymentValidator = async (req: Request, res: Response) => {
+export const paymentValidator = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
-    const razarpayKeySecret = process.env.RAZORPAY_KEY_SECRET as string;
+    console.log("payment controller");
 
-    const generatedSignature = crypto
-      .createHmac("sha256", razarpayKeySecret)
-      .update(razorpayOrderId + "|" + razorpayPaymentId)
-      .digest("hex");
-
-    // Compare signatures
-    const isValid = generatedSignature === razorpaySignature;
-    if (!isValid) {
-      return res.json({
-        status: 400,
-        message: "Payment verification failed - Invalid signature",
-      });
-    }
+    const { razorpayOrderId, razorpayPaymentId } = req.body as any;
 
     const payment = await paymentSchema.findOne({
       paymentIntentId: razorpayOrderId,
@@ -42,10 +32,7 @@ export const razorpayPaymentValidator = async (req: Request, res: Response) => {
       paymentStatus: "paid",
     });
 
-    res.json({
-      status: 200,
-      message: "Payment verified successfully",
-    });
+    next();
   } catch (error) {
     return res.json({
       status: 500,

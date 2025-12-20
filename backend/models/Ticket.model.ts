@@ -23,8 +23,13 @@ const ticketSchema = new mongoose.Schema(
       ref: "users",
       required: [true, "User ID is required"],
     },
-    seatNumber: {
+    numberOfTickets: {
+      type: Number,
+    },
+    transactionReference: {
       type: String,
+      unique: true,
+      required: [true, "Transaction reference required"],
     },
     qrCode: {
       type: String,
